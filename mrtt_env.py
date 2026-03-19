@@ -1,6 +1,7 @@
 import numpy as np
 from adversaries import build_adversary
 
+
 class MRTTWorld:
     def __init__(self, world_cfg, adv_cfg=None, seed=None, adversary=None):
         self.world_type = world_cfg["type"]
@@ -16,7 +17,8 @@ class MRTTWorld:
         self.reset()
 
     def reset(self):
-        self.adversary.reset()
+        if self.adversary is not None:
+            self.adversary.reset()
         self.prev_investment = None
         self.prev_repay_prop = None
 
@@ -68,4 +70,28 @@ class MRTTWorld:
             "investor_gain": investor_gain,
             "trustee_gain": trustee_gain,
             "adv_details": adv_details,
+            "done": done,
+        }
+
+    def step_manual(self, investment, repay_prop, round_idx):
+        tripled = 3.0 * investment
+        repayment = tripled * repay_prop
+
+        investor_gain = self.endowment - investment + repayment
+        trustee_gain = tripled - repayment
+
+        done = (round_idx == self.horizon - 1)
+
+        self.prev_investment = investment
+        self.prev_repay_prop = repay_prop
+
+        return {
+            "round": round_idx,
+            "investment": investment,
+            "tripled_amount": tripled,
+            "repay_prop": repay_prop,
+            "repayment": repayment,
+            "investor_gain": investor_gain,
+            "trustee_gain": trustee_gain,
+            "done": done,
         }

@@ -1,4 +1,6 @@
-CONFIGS = {
+import copy
+
+BASE_CONFIG = {
     "world": {
         "type": "coordinated",
         "horizon": 10,
@@ -28,7 +30,7 @@ CONFIGS = {
         },
         "worlds": {
             "independent": {
-                "aggregation": "sample"
+                "aggregation": "sample",
             },
             "coordinated": {
                 "aggregation": "min",
@@ -41,3 +43,11 @@ CONFIGS = {
         "type": "reactive",
     },
 }
+
+CONFIGS = {
+    "baseline_coordinated": copy.deepcopy(BASE_CONFIG),
+    "baseline_independent": copy.deepcopy(BASE_CONFIG),
+}
+
+CONFIGS["baseline_coordinated"]["world"]["type"] = "coordinated"
+CONFIGS["baseline_independent"]["world"]["type"] = "independent"
